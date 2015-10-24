@@ -1,0 +1,5 @@
+name = Cipher
+description = Caesar Cipher, shifts your letters around to encode your message.
+package = My First Modules
+core = 7.x
+files[] = cipher.module
