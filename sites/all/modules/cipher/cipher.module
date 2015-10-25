@@ -50,15 +50,21 @@ function cipher_form_submit($form, &$form_state){
   $result_array = array();
   $alpha = str_split("abcdefghijklmnopqrstuvwxyz");
   $split_phrase = str_split($phrase);
-  if($direction == "right"){
-    foreach($split_phrase as $letter){
-      $key = array_search($letter, $alpha);
-      array_push($result_array, $alpha[$key - $shift_value]);
-    }
-  }
   if($direction == "left"){
     foreach($split_phrase as $letter){
       $key = array_search($letter, $alpha);
+      if(($key - $shift_value) < 0){
+        $key += 27 - $shift_value;
+      }
+      array_push($result_array, $alpha[$key - $shift_value]);
+    }
+  }
+  if($direction == "right"){
+    foreach($split_phrase as $letter){
+      $key = array_search($letter, $alpha);
+      if(($key + $shift_value) > 25){
+        $key -= 25 + $shift_value;
+      }
       array_push($result_array, $alpha[$key + $shift_value]);
     }
   }
