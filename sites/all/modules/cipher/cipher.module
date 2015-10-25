@@ -16,16 +16,18 @@ function cipher_form() {
     '#title' => 'Shift Value',
     '#type' => 'textfield',
     '#description' => t('Enter shift value'),
+    '#element_validate' => array('element_validate_integer_positive'),
   );
   $form['direction'] = array(
     '#title' => 'Direction',
     '#type' => 'textfield',
     '#description' => t('Enter Direction'),
+    // '#element_validate' => array('element_validate_rightleft'),
   );
   $form['phrase'] = array(
     '#title' => 'Phrase',
     '#type' => 'textfield',
-    '#description' => t('Enter phse to be encrypted'),
+    '#description' => t('Enter phrase to be encrypted'),
   );
   $form['submit'] = array(
   '#type' => 'submit',
@@ -34,6 +36,31 @@ function cipher_form() {
   return $form;
 }
 
+// function element_validate_rightleft($element) {
+//     if ($element['value'] != 'right' || 'left') {
+//         form_error($element, t('You must enter "left" or "right".'));
+//     }
+// }
+
 function cipher_form_submit($form, &$form_state){
-  
+  $shift_value = $form_state['values']['shift_value'];
+  $direction = $form_state['values']['direction'];
+  $phrase = $form_state['values']['phrase'];
+
+  $result_array = array();
+  $alpha = str_split("abcdefghijklmnopqrstuvwxyz");
+  $split_phrase = str_split($phrase);
+  if($direction == "right"){
+    foreach($split_phrase as $letter){
+      $key = array_search($letter, $alpha);
+      array_push($result_array, $alpha[$key - $shift_value]);
+    }
+  }
+  if($direction == "left"){
+    foreach($split_phrase as $letter){
+      $key = array_search($letter, $alpha);
+      array_push($result_array, $alpha[$key + $shift_value]);
+    }
+  }
+  drupal_set_message(implode("", $result_array));
 }
