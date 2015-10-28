@@ -22,12 +22,13 @@ function cipher_form() {
     '#title' => 'Direction',
     '#type' => 'textfield',
     '#description' => t('Enter Direction'),
-    // '#element_validate' => array('element_validate_rightleft'),
+    '#element_validate' => array('element_validate_rightleft'),
   );
   $form['phrase'] = array(
     '#title' => 'Phrase',
     '#type' => 'textfield',
     '#description' => t('Enter phrase to be encrypted'),
+    '#element_validate' => array('element_validate_punctuation'),
   );
   $form['submit'] = array(
   '#type' => 'submit',
@@ -36,11 +37,31 @@ function cipher_form() {
   return $form;
 }
 
-// function element_validate_rightleft($element) {
-//     if ($element['value'] != 'right' || 'left') {
-//         form_error($element, t('You must enter "left" or "right".'));
-//     }
+
+// // form validate null
+// function element_validate_null($form, &$form_state){
+//   $fieldname = $form_state['values'];
+//   if($fieldname == null){
+//     form_set_error($element, t('required field!'));
+//   }
 // }
+
+
+//form validate left or right
+function element_validate_rightleft($element) {
+  $allowed = array('right', 'left');
+  if (!in_array($element['#value'], $allowed)) {
+      form_error($element, t('You must enter "left" or "right".'));
+  }
+}
+
+// element validate punctuation for only spaces and punctuation
+function element_validate_punctuation($element){
+  $not_allowed = str_split('<>/_)()=+*&^%$#@~`|');
+  if(in_array($element['#value'], $not_allowed)){
+    form_error($element, t('please do not enter "special characters" only punctuation and spaces.'));
+  }
+}
 
 function cipher_form_submit($form, &$form_state){
   $shift_value = $form_state['values']['shift_value'];
